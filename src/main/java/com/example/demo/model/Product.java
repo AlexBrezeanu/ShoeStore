@@ -18,8 +18,9 @@ public class Product {
     private Category category;
     private String name;
     private String colour;
+    @Column(name = "_size")
     private Integer size;
-    private BigDecimal price;
+    private double price;
 
 }
 
