@@ -22,6 +22,11 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.addCategory(dto));
     }
 
+    @PutMapping
+    public ResponseEntity<CategoryDTO> updateCategory(@RequestBody CategoryDTO dto) {
+        return ResponseEntity.ok(categoryService.updateCategory(dto));
+    }
+
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         return ResponseEntity.ok(categoryService.getAllCategories());

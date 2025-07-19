@@ -45,4 +45,16 @@ public class CategoryService {
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
         return convertToDTO(category);
     }
+
+    public CategoryDTO updateCategory(CategoryDTO dto) {
+
+        Category existing = categoryRepo.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Category not found with id: " + dto.getId()));
+
+        existing.setName(dto.getName());
+
+        Category saved = categoryRepo.save(existing);
+        return convertToDTO(saved);
+    }
+
 }
