@@ -23,7 +23,7 @@ public class ProductService {
 
     public List<ProductDTO> getAllProductDTOs() {
         return productRepo.findAll().stream()
-                .map(this::convertToDTO)
+                .map(Product::convertToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -33,7 +33,7 @@ public class ProductService {
 
         Product product = convertToEntity(dto, category);
         Product saved = productRepo.save(product);
-        return convertToDTO(saved);
+        return saved.convertToDTO();
     }
 
     public ProductDTO updateProduct(Integer id, ProductDTO productDTO) {
@@ -52,28 +52,18 @@ public class ProductService {
         }
 
         Product savedProduct = productRepo.save(existingProduct);
-        return convertToDTO(savedProduct);
+        return savedProduct.convertToDTO();
     }
 
     public ProductDTO getProductById(Integer id) {
         Product product = productRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
 
-        return convertToDTO(product);
+        return product.convertToDTO();
     }
 
     public void deleteProduct(Integer id) {
         productRepo.deleteById(id);
-    }
-
-    private ProductDTO convertToDTO(Product product) {
-        ProductDTO dto = new ProductDTO();
-        dto.setName(product.getName());
-        dto.setColour(product.getColour());
-        dto.setSize(product.getSize());
-        dto.setPrice(product.getPrice());
-        dto.setCategoryName(product.getCategory().getName());
-        return dto;
     }
 
     private Product convertToEntity(ProductDTO dto, Category category) {

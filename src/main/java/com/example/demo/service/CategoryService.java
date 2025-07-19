@@ -21,12 +21,12 @@ public class CategoryService {
         Category category = new Category();
         category.setName(dto.getName());
         Category saved = categoryRepo.save(category);
-        return convertToDTO(saved);
+        return saved.convertToDTO();
     }
 
     public List<CategoryDTO> getAllCategories() {
         return categoryRepo.findAll().stream()
-                .map(this::convertToDTO)
+                .map(Category::convertToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -34,16 +34,10 @@ public class CategoryService {
         categoryRepo.deleteById(id);
     }
 
-    private CategoryDTO convertToDTO(Category category) {
-        CategoryDTO dto = new CategoryDTO();
-        dto.setName(category.getName());
-        return dto;
-    }
-
     public CategoryDTO getCategoryById(Integer id) {
         Category category = categoryRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
-        return convertToDTO(category);
+        return category.convertToDTO();
     }
 
     public CategoryDTO updateCategory(CategoryDTO dto) {
@@ -54,7 +48,7 @@ public class CategoryService {
         existing.setName(dto.getName());
 
         Category saved = categoryRepo.save(existing);
-        return convertToDTO(saved);
+        return saved.convertToDTO();
     }
 
 }

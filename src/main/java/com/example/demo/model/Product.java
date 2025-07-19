@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.dto.ProductDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +22,24 @@ public class Product {
     @Column(name = "_size")
     private Integer size;
     private double price;
+
+    public Product(String name, String colour, Integer size, double price, Category category) {
+        this.name = name;
+        this.colour = colour;
+        this.size = size;
+        this.price = price;
+        this.category = category;
+    }
+
+    public ProductDTO convertToDTO() {
+        ProductDTO dto = new ProductDTO();
+        dto.setName(this.getName());
+        dto.setColour(this.getColour());
+        dto.setSize(this.getSize());
+        dto.setPrice(this.getPrice());
+        dto.setCategoryName(this.getCategory().getName());
+        return dto;
+    }
 
 }
 
