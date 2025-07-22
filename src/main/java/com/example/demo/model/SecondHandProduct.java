@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class SecondHandProduct extends Product {
-    private String condition; // e.g., "Good", "Like New", etc.
+    private String condition;
 
     public SecondHandProduct() {
         super();
