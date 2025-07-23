@@ -5,7 +5,7 @@ import com.example.demo.model.Category;
 import com.example.demo.model.Product;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.ProductRepository;
-import com.example.demo.service.ProductService;
+import com.example.demo.service.implementations.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -27,28 +27,42 @@ public class ProductServiceTest {
     private CategoryRepository categoryRepo;
 
     @InjectMocks
-    private ProductService productService;
+    private ProductServiceImpl productService;
 
     private Product sampleProduct;
     private Category sampleCategory;
+    private ProductDTO sampleProductDTO;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        sampleCategory = new Category(null, "Sport Shoes");
-        sampleProduct = new Product(null, sampleCategory, "Runner X", "Red", 42, 99.99);
+
+        sampleCategory = new Category(1, "Sport Shoes");
+
+        sampleProduct = new Product(1, sampleCategory, "Runner X", "Red", 42, 99.99);
+
+        sampleProductDTO = new ProductDTO();
+        sampleProductDTO.setId(1);
+        sampleProductDTO.setName("Runner X");
+        sampleProductDTO.setColour("Red");
+        sampleProductDTO.setSize(42);
+        sampleProductDTO.setPrice(99.99);
+        sampleProductDTO.setCategoryId(1);
+        sampleProductDTO.setCategoryName("Sport Shoes");
     }
 
     @Test
     public void testAddProduct() {
-        when(productRepo.save(sampleProduct)).thenReturn(sampleProduct);
-        when(categoryRepo.findByName(sampleProduct.getCategory().getName())).thenReturn(Optional.of(sampleCategory));
+        when(categoryRepo.findById(1)).thenReturn(Optional.of(sampleCategory));
+        when(productRepo.save(any(Product.class))).thenReturn(sampleProduct);
 
-        ProductDTO saved = productService.saveProductFromDTO(sampleProduct.convertToDTO());
+        ProductDTO result = productService.saveProductFromDTO(sampleProductDTO);
 
-        assertNotNull(saved);
-        assertEquals("Runner X", saved.getName());
-        verify(productRepo, times(1)).save(sampleProduct);
+        assertNotNull(result);
+        assertEquals("Runner X", result.getName());
+        assertEquals(42, result.getSize());
+        verify(categoryRepo, times(1)).findById(1);
+        verify(productRepo, times(1)).save(any(Product.class));
     }
 
     @Test
@@ -59,6 +73,7 @@ public class ProductServiceTest {
 
         assertFalse(products.isEmpty());
         assertEquals(1, products.size());
+        assertEquals("Runner X", products.get(0).getName());
         verify(productRepo, times(1)).findAll();
     }
 
@@ -66,11 +81,10 @@ public class ProductServiceTest {
     public void testGetProductById() {
         when(productRepo.findById(1)).thenReturn(Optional.of(sampleProduct));
 
-        ProductDTO productDTO = productService.getProductById(1);
+        ProductDTO result = productService.getProductById(1);
 
-        assertNotNull(productDTO);
-        assertEquals("Runner X", productDTO.getName());
+        assertNotNull(result);
+        assertEquals("Runner X", result.getName());
         verify(productRepo, times(1)).findById(1);
     }
 }
-
